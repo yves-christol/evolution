@@ -34,6 +34,8 @@ pub struct Snapshot<O: Organism> {
 pub struct RunControl {
     stop: std::sync::atomic::AtomicBool,
     pause: std::sync::atomic::AtomicBool,
+    /// Delay in milliseconds between generations (0 = full speed).
+    delay_ms: std::sync::atomic::AtomicU64,
 }
 
 impl RunControl {
@@ -41,6 +43,7 @@ impl RunControl {
         RunControl {
             stop: std::sync::atomic::AtomicBool::new(false),
             pause: std::sync::atomic::AtomicBool::new(false),
+            delay_ms: std::sync::atomic::AtomicU64::new(0),
         }
     }
 
@@ -54,12 +57,26 @@ impl RunControl {
             .fetch_xor(true, std::sync::atomic::Ordering::Relaxed);
     }
 
+    pub fn set_paused(&self, paused: bool) {
+        self.pause
+            .store(paused, std::sync::atomic::Ordering::Relaxed);
+    }
+
     pub fn is_stopped(&self) -> bool {
         self.stop.load(std::sync::atomic::Ordering::Relaxed)
     }
 
     pub fn is_paused(&self) -> bool {
         self.pause.load(std::sync::atomic::Ordering::Relaxed)
+    }
+
+    pub fn set_delay_ms(&self, ms: u64) {
+        self.delay_ms
+            .store(ms, std::sync::atomic::Ordering::Relaxed);
+    }
+
+    pub fn delay_ms(&self) -> u64 {
+        self.delay_ms.load(std::sync::atomic::Ordering::Relaxed)
     }
 }
 
@@ -181,6 +198,14 @@ where
             }
 
             last_snapshot = Some(snapshot);
+
+            // Throttle if requested
+            if let Some(ctrl) = control {
+                let ms = ctrl.delay_ms();
+                if ms > 0 {
+                    std::thread::sleep(std::time::Duration::from_millis(ms));
+                }
+            }
         }
 
         last_snapshot.expect("simulation ran zero generations")

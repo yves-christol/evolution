@@ -16,3 +16,5 @@ rand_chacha = "0.9"
 rayon = "1.10"
 crossbeam-channel = "0.5"
 clap = { version = "4", features = ["derive"] }
+eframe = "0.31"
+egui_plot = "0.31"
