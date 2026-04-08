@@ -1,0 +1,18 @@
+[workspace]
+members = [
+    "crates/evo-core",
+    "crates/evo-models",
+    "crates/evo-cli",
+    "crates/evo-gui",
+]
+resolver = "2"
+
+[workspace.dependencies]
+evo-core = { path = "crates/evo-core" }
+evo-models = { path = "crates/evo-models" }
+serde = { version = "1", features = ["derive"] }
+rand = "0.9"
+rand_chacha = "0.9"
+rayon = "1.10"
+crossbeam-channel = "0.5"
+clap = { version = "4", features = ["derive"] }

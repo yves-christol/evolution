@@ -1,0 +1,18 @@
+[package]
+name = "evo-models"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+evo-core = { workspace = true }
+serde = { workspace = true }
+rand = { workspace = true }
+rayon = { workspace = true }
+
+[dev-dependencies]
+rand_chacha = { workspace = true }
+criterion = "0.5"
+
+[[bench]]
+name = "onemax"
+harness = false

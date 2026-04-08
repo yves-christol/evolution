@@ -1,0 +1,12 @@
+[package]
+name = "evo-cli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+evo-core = { workspace = true }
+evo-models = { workspace = true }
+clap = { workspace = true }
+rand = { workspace = true }
+rand_chacha = { workspace = true }
+crossbeam-channel = { workspace = true }
